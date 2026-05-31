@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allan Kungu Odongo | IT Support Professional</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#060b18;--navy2:#0b1120;--navy3:#111827;
+  --gold:#f5c842;--gold2:#d4a017;--goldr:245,200,66;
+  --cyan:#00d4ff;--cyanr:0,212,255;
+  --green:#00ff88;--greenr:0,255,136;
+  --purple:#7c3aed;--purpler:124,58,237;
+  --red:#ff3b5c;
+  --white:#fff;--gray:#8892b0;--gray2:#3d4a6b;
+  --mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden;cursor:none}
+
+/* ══ CURSOR ══ */
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+#cur{width:8px;height:8px;background:var(--gold);box-shadow:0 0 10px var(--gold),0 0 20px rgba(var(--goldr),.4);transition:width .12s,height .12s,background .12s}
+#cur2{width:32px;height:32px;border:1px solid rgba(var(--goldr),.4);transition:width .3s cubic-bezier(.25,1,.5,1),height .3s,border-color .3s}
+body.hov #cur{width:14px;height:14px;background:rgba(var(--goldr),.3)}
+body.hov #cur2{width:48px;height:48px;border-color:rgba(var(--goldr),.8)}
+
+/* ══ CANVASES ══ */
+#bg-canvas,#matrix-canvas{position:fixed;inset:0;pointer-events:none}
+#bg-canvas{z-index:0}
+#matrix-canvas{z-index:1;opacity:.055}
+
+/* ══ SCAN LINE ══ */
+body::before{content:'';position:fixed;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);animation:scan 8s linear infinite}
+@keyframes scan{0%{background-position:0 0}100%{background-position:0 100px}}
+
+/* ══ SCROLL BAR ══ */
+#sprogress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--cyan));z-index:999;box-shadow:0 0 8px var(--gold);transition:width .05s}
+
+/* ══ NAV ══ */
+nav{position:fixed;top:0;inset-inline:0;z-index:500;padding:.9rem 2.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(6,11,24,.82);backdrop-filter:blur(20px);border-bottom:1px solid rgba(var(--goldr),.08);animation:slideDown .8s ease both}
+@keyframes slideDown{from{transform:translateY(-110%);opacity:0}to{transform:none;opacity:1}}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.02em;position:relative}
+.logo span{color:var(--gold)}
+.logo::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
+.nav-links{display:flex;gap:1.8rem;list-style:none}
+.nav-links a{color:var(--gray);font-size:.78rem;text-decoration:none;font-weight:500;letter-spacing:.08em;text-transform:uppercase;transition:color .2s;position:relative;padding:.2rem 0}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:50%;width:0;height:1px;background:var(--gold);transition:width .25s,left .25s;box-shadow:0 0 6px var(--gold)}
+.nav-links a:hover,a.nav-active{color:var(--white)}
+.nav-links a:hover::after,.nav-links a.nav-active::after{width:100%;left:0}
+.avail-badge{display:flex;align-items:center;gap:.45rem;padding:.28rem .85rem;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.06em;border:1px solid rgba(var(--greenr),.35);color:var(--green);background:rgba(var(--greenr),.07)}
+.avail-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse-dot 1.8s infinite}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(var(--greenr),.5)}70%{box-shadow:0 0 0 8px rgba(var(--greenr),0)}}
+
+/* ══ WRAP ══ */
+.wrap{max-width:1180px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:10}
+
+/* ══ HERO ══ */
+#hero{min-height:100vh;display:flex;align-items:center;padding-top:5rem;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:4rem;align-items:center;width:100%}
+
+/* left text */
+.htag{display:inline-flex;align-items:center;gap:.6rem;font-size:.68rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;opacity:0;animation:fadeUp .5s .2s both}
+.htag::before,.htag::after{content:'';height:1px;background:var(--gold);opacity:.5}
+.htag::before{width:20px}
+.htag::after{width:8px}
+.hname{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.4rem,5vw,3.8rem);line-height:1.03;letter-spacing:-.03em;margin-bottom:.5rem;opacity:0;animation:fadeUp .5s .35s both}
+.hname .glow{color:var(--gold);text-shadow:0 0 40px rgba(var(--goldr),.35),0 0 80px rgba(var(--goldr),.1)}
+.htitle{font-family:var(--mono);font-size:clamp(.85rem,1.6vw,1.1rem);color:var(--cyan);margin-bottom:1.8rem;min-height:1.8em;opacity:0;animation:fadeUp .5s .5s both}
+.htitle-prefix{color:var(--gray);margin-right:.4rem}
+.tcursor{display:inline-block;width:2px;height:1em;background:var(--cyan);vertical-align:middle;margin-left:1px;animation:blink .75s infinite;box-shadow:0 0 8px var(--cyan)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hdesc{font-size:.93rem;line-height:1.85;color:var(--gray);max-width:490px;margin-bottom:2.2rem;opacity:0;animation:fadeUp .5s .65s both}
+.hdesc strong{color:var(--white)}
+.cta{display:flex;gap:.85rem;flex-wrap:wrap;opacity:0;animation:fadeUp .5s .8s both}
+.btn-primary{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);padding:.8rem 1.65rem;border-radius:6px;font-weight:700;font-size:.85rem;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(var(--goldr),.3);position:relative;overflow:hidden}
+.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);opacity:0;transition:.2s}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(var(--goldr),.5)}
+.btn-primary:hover::before{opacity:1}
+.btn-ghost{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(var(--goldr),.3);color:var(--white);padding:.8rem 1.65rem;border-radius:6px;font-weight:500;font-size:.85rem;text-decoration:none;transition:.2s;background:rgba(var(--goldr),.03)}
+.btn-ghost:hover{border-color:var(--gold);background:rgba(var(--goldr),.08);transform:translateY(-3px);box-shadow:0 8px 28px rgba(var(--goldr),.15)}
+
+.hstats{display:flex;gap:2.2rem;margin-top:2.5rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.06);opacity:0;animation:fadeUp .5s 1s both}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:var(--gold);line-height:1;text-shadow:0 0 24px rgba(var(--goldr),.3)}
+.stat-label{font-size:.66rem;color:var(--gray);margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
+
+/* profile card */
+.hvisual{position:relative;display:flex;justify-content:center;align-items:center;opacity:0;animation:fadeIn .9s .6s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.pcard{position:relative;z-index:5;background:rgba(11,17,32,.7);border:1px solid rgba(var(--goldr),.18);border-radius:18px;padding:2rem 1.7rem;width:305px;backdrop-filter:blur(24px);box-shadow:0 20px 70px rgba(0,0,0,.6),0 0 0 1px rgba(var(--goldr),.05),inset 0 1px 0 rgba(255,255,255,.04);transition:transform .08s ease-out;transform-style:preserve-3d}
+.pcard-shine{position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 60%);pointer-events:none}
+.pcard-border-glow{position:absolute;inset:-1px;border-radius:19px;background:linear-gradient(135deg,rgba(var(--goldr),.2),rgba(var(--cyanr),.06),transparent 50%);pointer-events:none;animation:border-rot 6s linear infinite}
+@keyframes border-rot{0%,100%{opacity:.6}50%{opacity:1}}
+.pavatar{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1.45rem;font-weight:800;color:var(--navy);margin-bottom:.85rem;position:relative}
+.pavatar::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:transparent;border:1px solid rgba(var(--goldr),.25);animation:avatar-ring 2.5s ease-in-out infinite}
+@keyframes avatar-ring{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.08);opacity:1}}
+.pname{font-family:'Syne',sans-serif;font-weight:700;font-size:.98rem;margin-bottom:.12rem}
+.prole{font-size:.75rem;color:var(--gold);margin-bottom:1.2rem;font-family:var(--mono)}
+.pdiv{height:1px;background:linear-gradient(90deg,transparent,rgba(var(--goldr),.25),transparent);margin-bottom:1.2rem}
+.pbars{display:flex;flex-direction:column;gap:.72rem}
+.prow{display:flex;flex-direction:column;gap:.25rem}
+.plabel{display:flex;justify-content:space-between;font-size:.69rem;color:var(--gray)}
+.plabel b{color:var(--white);font-weight:500}
+.pbar{height:3px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.pfill{height:100%;border-radius:3px;width:0;transition:width 1.8s cubic-bezier(.4,0,.2,1)}
+.pfill.gold{background:linear-gradient(90deg,var(--gold),#ffe066)}
+.pfill.cyan{background:linear-gradient(90deg,var(--cyan),#66e8ff)}
+.pfill.green{background:linear-gradient(90deg,var(--green),#66ffbb)}
+.pbadges{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1.15rem}
+.badge{font-size:.62rem;padding:.2rem .58rem;border-radius:100px;font-weight:600;background:rgba(var(--goldr),.08);border:1px solid rgba(var(--goldr),.22);color:var(--gold);opacity:0;animation:badgeIn .4s both}
+@keyframes badgeIn{from{opacity:0;transform:scale(.8) translateY(4px)}to{opacity:1;transform:none}}
+
+/* orbits */
+.orb-ring{position:absolute;border-radius:50%;border-style:solid;border-color:transparent;pointer-events:none}
+.orb1{width:390px;height:390px;top:50%;left:50%;margin:-195px 0 0 -195px;border-top-color:rgba(var(--goldr),.1);border-right-color:rgba(var(--goldr),.05);animation:orb-spin 22s linear infinite}
+.orb2{width:510px;height:510px;top:50%;left:50%;margin:-255px 0 0 -255px;border-bottom-color:rgba(var(--cyanr),.08);border-left-color:rgba(var(--cyanr),.04);animation:orb-spin 36s linear infinite reverse}
+.orb3{width:280px;height:280px;top:50%;left:50%;margin:-140px 0 0 -140px;border-top-color:rgba(var(--purpler),.1);animation:orb-spin 15s linear infinite}
+@keyframes orb-spin{to{transform:rotate(360deg)}}
+.orb-dot{position:absolute;border-radius:50%}
+.od1{width:8px;height:8px;top:0;left:50%;margin-left:-4px;background:var(--gold);box-shadow:0 0 14px var(--gold),0 0 28px rgba(var(--goldr),.4)}
+.od2{width:6px;height:6px;bottom:0;left:30%;margin-left:-3px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.od3{width:5px;height:5px;top:50%;right:0;margin-top:-2.5px;background:rgba(var(--purpler),.8);box-shadow:0 0 10px var(--purple)}
+
+/* floating cards */
+.fcard{position:absolute;z-index:6;background:rgba(6,11,24,.9);border:1px solid rgba(var(--goldr),.25);border-radius:12px;padding:.65rem .9rem;backdrop-filter:blur(16px);display:flex;align-items:center;gap:.55rem;font-size:.71rem;font-weight:500;box-shadow:0 8px 28px rgba(0,0,0,.4),0 0 0 1px rgba(var(--goldr),.05);white-space:nowrap;transition:border-color .2s,box-shadow .2s}
+.fcard:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(var(--goldr),.2)}
+.fcard .fi{font-size:.9rem}
+.fval{color:var(--white);font-weight:700;font-size:.75rem}
+.fsub{color:var(--gray);font-size:.62rem;margin-top:1px}
+.fc1{top:4%;right:-12px;animation:flt1 5s .3s ease-in-out infinite}
+.fc2{bottom:14%;left:-38px;animation:flt2 6s 1s ease-in-out infinite}
+.fc3{top:45%;right:-48px;animation:flt1 4.2s .7s ease-in-out infinite}
+@keyframes flt1{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-13px) rotate(1deg)}}
+@keyframes flt2{0%,100%{transform:translateY(0) rotate(1deg)}50%{transform:translateY(-9px) rotate(-1deg)}}
+
+/* scroll hint */
+.scroll-hint{position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.62rem;color:var(--gray);letter-spacing:.12em;text-transform:uppercase;opacity:0;animation:fadeIn .8s 2.4s both}
+.sh-line{width:1px;height:40px;background:linear-gradient(var(--gold),transparent);animation:sh-drop 1.8s 3s ease-in-out infinite}
+@keyframes sh-drop{0%{transform:scaleY(0);transform-origin:top;opacity:0}40%{transform:scaleY(1);transform-origin:top;opacity:1}60%{transform:scaleY(1);transform-origin:bottom;opacity:1}100%{transform:scaleY(0);transform-origin:bottom;opacity:0}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* ══ SECTIONS ══ */
+.sec{padding:5.5rem 0;position:relative;z-index:10}
+.sec-label{font-family:var(--mono);font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.55rem;opacity:.75}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:800;letter-spacing:-.025em;margin-bottom:.5rem;line-height:1.1}
+.sec-sub{color:var(--gray);font-size:.9rem;margin-bottom:3rem;max-width:580px;line-height:1.8}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ══ ABOUT ══ */
+#about-detail{background:var(--navy2)}
+#about-detail::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 80% 40%,rgba(var(--goldr),.03),transparent);pointer-events:none}
+.about-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:4rem;align-items:start}
+.about-body{font-size:.92rem;line-height:1.9;color:var(--gray)}
+.about-body strong{color:var(--white)}
+.about-body p+p{margin-top:.9rem}
+
+/* terminal */
+.term-wrap{background:rgba(6,11,24,.95);border:1px solid rgba(var(--goldr),.15);border-radius:14px;overflow:hidden;margin-top:2rem;box-shadow:0 16px 50px rgba(0,0,0,.5)}
+.term-bar{background:rgba(255,255,255,.03);padding:.55rem 1rem;display:flex;align-items:center;gap:.45rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.tdot{width:10px;height:10px;border-radius:50%}
+.tdot.r{background:#ff5f57}.tdot.y{background:#ffbd2e}.tdot.g{background:#28ca41}
+.term-title-bar{font-family:var(--mono);font-size:.65rem;color:var(--gray);margin-left:.4rem}
+.term-body{padding:1.1rem 1.3rem;font-family:var(--mono);font-size:.77rem;line-height:1.95;color:var(--gray)}
+.t-cmd{color:var(--green)}.t-key{color:var(--gold)}.t-val{color:var(--white)}.t-comment{color:rgba(255,255,255,.18)}.t-ok{color:var(--green)}.t-cursor{display:inline-block;width:7px;height:.95em;background:var(--green);vertical-align:middle;animation:blink .85s infinite}
+
+.cpills{display:flex;flex-direction:column;gap:.65rem;margin-top:1.7rem}
+.cpill{display:flex;align-items:center;gap:.8rem;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:.78rem .95rem;font-size:.86rem;transition:.22s;text-decoration:none;color:inherit;position:relative;overflow:hidden}
+.cpill::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);transform:scaleY(0);transform-origin:bottom;transition:transform .3s}
+.cpill:hover{border-color:rgba(var(--goldr),.3);background:rgba(var(--goldr),.04);transform:translateX(4px)}
+.cpill:hover::before{transform:scaleY(1)}
+.cpill .ci{font-size:1rem;width:22px;text-align:center}
+.cpill-label{font-size:.66rem;color:var(--gray);text-transform:uppercase;letter-spacing:.07em}
+.cpill-val{color:var(--white);font-weight:500;font-size:.85rem}
+
+.iboxes{display:flex;flex-direction:column;gap:.9rem}
+.ibox{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:1.2rem 1.35rem;transition:.22s;position:relative;overflow:hidden;cursor:default}
+.ibox::after{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--cyan));transition:width .4s}
+.ibox:hover{border-color:rgba(var(--goldr),.28);transform:translateX(5px)}
+.ibox:hover::after{width:100%}
+.ibox-head{display:flex;align-items:center;gap:.65rem;margin-bottom:.4rem}
+.ibox-icon{font-size:1.15rem}
+.ibox-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem}
+.ibox-body{font-size:.8rem;color:var(--gray);line-height:1.6}
+
+/* ══ EXPERIENCE ══ */
+#experience{background:var(--navy);position:relative}
+#experience::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 50% 0%,rgba(var(--goldr),.025),transparent);pointer-events:none}
+.exp-list{display:flex;flex-direction:column}
+.exp-item{display:grid;grid-template-columns:195px 1fr;gap:2rem;padding:2.3rem 0;border-bottom:1px solid rgba(255,255,255,.045);position:relative;transition:.2s;cursor:default}
+.exp-item:last-child{border:none}
+.exp-item::before{content:'';position:absolute;left:186px;top:0;bottom:0;width:1px;background:rgba(255,255,255,.05)}
+.exp-item:hover{background:rgba(var(--goldr),.012);padding-left:.5rem;padding-right:.5rem;border-radius:12px}
+.exp-item:hover .exp-dot{background:var(--gold);box-shadow:0 0 18px rgba(var(--goldr),.7)}
+.exp-left{text-align:right;padding-right:2rem;position:relative}
+.exp-dot{position:absolute;right:-7px;top:2rem;width:12px;height:12px;border-radius:50%;background:var(--gray2);border:2px solid var(--navy);transition:.3s;z-index:1}
+.exp-dates{font-family:var(--mono);font-size:.71rem;color:var(--gold);font-weight:600;letter-spacing:.04em;margin-bottom:.35rem}
+.exp-org{font-size:.79rem;color:var(--gray);line-height:1.45}
+.exp-role{font-family:'Syne',sans-serif;font-weight:700;font-size:1.03rem;margin-bottom:.28rem}
+.exp-co{font-size:.78rem;color:var(--gold);margin-bottom:.7rem;opacity:.75;font-family:var(--mono)}
+.exp-desc{font-size:.87rem;color:var(--gray);line-height:1.82}
+.exp-tags{display:flex;flex-wrap:wrap;gap:.38rem;margin-top:.85rem}
+.etag{font-size:.64rem;padding:.2rem .58rem;border-radius:100px;background:rgba(var(--cyanr),.06);border:1px solid rgba(var(--cyanr),.18);color:var(--cyan);font-weight:500;transition:.18s}
+.etag:hover{background:rgba(var(--cyanr),.12);border-color:var(--cyan)}
+
+/* ══ EDUCATION ══ */
+#education{background:var(--navy2)}
+.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:3rem}
+.edu-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:1.6rem;transition:.22s;position:relative;overflow:hidden}
+.edu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--goldr),.4),transparent);opacity:0;transition:.3s}
+.edu-card:hover{border-color:rgba(var(--goldr),.3);transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,0,0,.3)}
+.edu-card:hover::before{opacity:1}
+.edu-year{font-family:var(--mono);font-size:.7rem;color:var(--gold);letter-spacing:.06em;margin-bottom:.6rem}
+.edu-deg{font-family:'Syne',sans-serif;font-weight:700;font-size:.98rem;margin-bottom:.25rem;line-height:1.4}
+.edu-school{font-size:.8rem;color:var(--gray)}
+
+.trans-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;flex-wrap:wrap;gap:1rem}
+.admit-tag{font-family:var(--mono);font-size:.7rem;color:var(--gray);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:.38rem .78rem;border-radius:6px}
+.ts-mastery{color:var(--green)}.ts-proficient{color:var(--gold)}.ts-competent{color:var(--cyan)}
+table.trans{width:100%;border-collapse:collapse;font-size:.81rem}
+table.trans th{text-align:left;font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);padding:.62rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02)}
+table.trans td{padding:.68rem 1rem;border-bottom:1px solid rgba(255,255,255,.035);color:var(--gray);transition:.12s}
+table.trans tr:hover td{background:rgba(var(--goldr),.022)}
+table.trans td:first-child{color:var(--white)}
+.score-wrap{display:flex;align-items:center;gap:.7rem}
+.score-num{font-family:var(--mono);font-size:.78rem;color:var(--white);font-weight:600;min-width:28px}
+.score-bar{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.score-fill{height:100%;border-radius:3px;width:0;transition:width 1.5s .15s cubic-bezier(.4,0,.2,1)}
+.fill-mastery{background:linear-gradient(90deg,var(--green),#5affa0)}
+.fill-proficient{background:linear-gradient(90deg,var(--gold),#ffe07a)}
+.fill-competent{background:linear-gradient(90deg,var(--cyan),#80ecff)}
+
+/* ══ SKILLS ══ */
+#skills{background:var(--navy);position:relative}
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.4rem}
+.sg-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:var(--white);margin-bottom:1rem;display:flex;align-items:center;gap:.55rem}
+.sg-title::before{content:'';width:16px;height:2px;background:linear-gradient(90deg,var(--gold),transparent);border-radius:1px}
+.chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.chip{font-size:.75rem;padding:.3rem .72rem;border-radius:100px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);color:var(--gray);transition:.18s;cursor:default}
+.chip:hover{border-color:rgba(var(--goldr),.4);background:rgba(var(--goldr),.06);color:var(--white);transform:translateY(-2px)}
+.chip.hot{border-color:rgba(var(--goldr),.28);color:var(--gold);background:rgba(var(--goldr),.06)}
+
+/* ══ CERTS ══ */
+#certs{background:var(--navy2)}
+.certs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:1.2rem}
+.cert-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.4rem;display:flex;flex-direction:column;gap:.45rem;transition:.22s;position:relative;overflow:hidden;cursor:default}
+.cert-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.cert-card:hover{border-color:rgba(var(--goldr),.28);transform:translateY(-5px);box-shadow:0 14px 44px rgba(0,0,0,.35)}
+.cert-card:hover::before{transform:scaleX(1)}
+.cert-icon{font-size:1.6rem;margin-bottom:.25rem}
+.cert-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;line-height:1.35}
+.cert-issuer{font-size:.76rem;color:var(--gray)}
+.cert-year{font-family:var(--mono);font-size:.66rem;color:var(--gold);letter-spacing:.05em;margin-top:.25rem;opacity:.8}
+
+/* ══ DOCS ══ */
+#documents{background:var(--navy)}
+.docs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:1.2rem}
+.doc-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.45rem;display:flex;flex-direction:column;gap:.65rem;transition:.22s;position:relative;overflow:hidden}
+.doc-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(var(--goldr),.04),transparent);opacity:0;transition:.3s;pointer-events:none}
+.doc-card:hover{border-color:rgba(var(--goldr),.22);transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.3)}
+.doc-card:hover::after{opacity:1}
+.doc-top{display:flex;align-items:flex-start;gap:.85rem}
+.doc-ico{width:42px;height:42px;border-radius:9px;background:rgba(var(--goldr),.08);border:1px solid rgba(var(--goldr),.18);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.doc-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;margin-bottom:.18rem}
+.doc-meta{font-family:var(--mono);font-size:.64rem;color:var(--gray2);letter-spacing:.03em}
+.doc-desc{font-size:.78rem;color:var(--gray);line-height:1.55;flex:1}
+.doc-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:auto;background:rgba(var(--goldr),.1);color:var(--gold);border:1px solid rgba(var(--goldr),.25);padding:.52rem 1rem;border-radius:6px;font-size:.76rem;font-weight:700;text-decoration:none;transition:.2s;width:fit-content}
+.doc-btn svg{width:13px;height:13px;fill:currentColor}
+.doc-btn:hover{background:rgba(var(--goldr),.2);border-color:var(--gold);box-shadow:0 4px 16px rgba(var(--goldr),.2);transform:translateY(-1px)}
+
+/* ══ CONTACT ══ */
+#contact{background:var(--navy2);position:relative;overflow:hidden}
+#contact::before{content:'';position:absolute;top:-40%;left:-20%;width:140%;height:140%;background:radial-gradient(ellipse 40% 40% at 60% 60%,rgba(var(--goldr),.04),transparent);pointer-events:none;animation:contact-glow 8s ease-in-out infinite alternate}
+@keyframes contact-glow{0%{opacity:.5;transform:scale(1)}100%{opacity:1;transform:scale(1.1)}}
+.contact-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:4rem;align-items:start}
+.cinfo-row{display:flex;align-items:center;gap:.95rem;padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.045);transition:.2s}
+.cinfo-row:last-child{border:none}
+.cinfo-row:hover .cinfo-ico-wrap{border-color:rgba(var(--goldr),.4);background:rgba(var(--goldr),.08)}
+.cinfo-ico-wrap{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;transition:.2s}
+.cinfo-label{font-size:.67rem;color:var(--gray);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
+.cinfo-val{color:var(--white);font-size:.88rem;font-weight:500}
+.contact-cta{background:linear-gradient(135deg,rgba(var(--goldr),.08),rgba(var(--goldr),.02));border:1px solid rgba(var(--goldr),.18);border-radius:18px;padding:2.4rem;position:relative;overflow:hidden}
+.contact-cta::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(var(--goldr),.1),transparent);pointer-events:none}
+.contact-cta h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.45rem;margin-bottom:.65rem;letter-spacing:-.02em}
+.contact-cta p{color:var(--gray);font-size:.88rem;line-height:1.75;margin-bottom:1.8rem}
+.cta-stack{display:flex;flex-direction:column;gap:.7rem}
+
+/* ══ FOOTER ══ */
+footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.05);padding:1.9rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;position:relative;z-index:10}
+.foot-l{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem}
+.foot-l span{color:var(--gold)}
+.foot-r{font-family:var(--mono);font-size:.72rem;color:var(--gray)}
+
+/* ══ TECH FLOATERS ══ */
+.tech-icon{position:fixed;font-size:1.3rem;pointer-events:none;z-index:2;opacity:0;filter:blur(.3px)}
+
+/* ══ GLITCH ══ */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{content:attr(data-t);position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.glitch::before{color:var(--cyan);opacity:.55;animation:g1 5s infinite}
+.glitch::after{color:var(--red);opacity:.4;animation:g2 5s infinite}
+@keyframes g1{0%,88%,100%{clip-path:none;transform:none}90%{clip-path:inset(20% 0 60% 0);transform:translate(-2px,-1px)}93%{clip-path:inset(60% 0 10% 0);transform:translate(2px,1px)}96%{clip-path:inset(40% 0 40% 0);transform:translate(-1px)}}
+@keyframes g2{0%,88%,100%{clip-path:none;transform:none}91%{clip-path:inset(50% 0 30% 0);transform:translate(2px,1px)}94%{clip-path:inset(10% 0 70% 0);transform:translate(-2px,-1px)}97%{clip-path:inset(70% 0 5% 0);transform:translate(1px)}}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:920px){
+  nav{padding:.8rem 1.4rem}.nav-links{display:none}.wrap{padding:0 1.4rem}
+  .hero-grid,.about-grid,.contact-grid{grid-template-columns:1fr}
+  .hvisual{order:-1}.orb1,.orb2{display:none}.fc3{display:none}.pcard{width:280px}
+  .edu-grid,.skills-grid{grid-template-columns:1fr}
+  footer{padding:1.4rem}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+<div id="sprogress"></div>
+<canvas id="bg-canvas"></canvas>
+<canvas id="matrix-canvas"></canvas>
+
+<!-- TECH FLOATERS (injected by JS) -->
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">AK<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about-detail">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#certs">Certs</a></li>
+    <li><a href="#documents">Documents</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="avail-badge"><div class="avail-dot"></div>Open to Work</div>
+</nav>
+
+<!-- ████ HERO ████ -->
+<section id="hero">
+<div class="wrap">
+<div class="hero-grid">
+
+  <div>
+    <div class="htag">IT Support Professional · Nairobi, Kenya</div>
+    <h1 class="hname">Allan <span class="glow glitch" data-t="Kungu">Kungu</span><br>Odongo</h1>
+    <div class="htitle"><span class="htitle-prefix">&gt;_</span><span id="typed"></span><span class="tcursor"></span></div>
+    <p class="hdesc">IT Support Professional with <strong>4+ years</strong> of hands-on experience delivering first-line &amp; remote support, computer repair and system maintenance across government ICT departments and cyber environments. Proficient in <strong>HubSpot · Zendesk · ServiceNow</strong>. <strong>C2 Proficient English</strong> (EF SET, 73/100).</p>
+    <div class="cta">
+      <a href="mailto:kunguallan75@gmail.com" class="btn-primary">⚡ Get In Touch</a>
+      <a href="https://allankungu.github.io/portfolio/Allan Kungu CV 2026.pdf" class="btn-ghost" target="_blank">↓ Download CV 2026</a>
+      <a href="#documents" class="btn-ghost">View Documents</a>
+    </div>
+    <div class="hstats">
+      <div><div class="stat-num" data-t="4" data-s="+">0</div><div class="stat-label">Yrs Experience</div></div>
+      <div><div class="stat-num" data-t="50" data-s="+">0</div><div class="stat-label">Staff Supported</div></div>
+      <div><div class="stat-num" data-t="95" data-s="%">0</div><div class="stat-label">Resolution Rate</div></div>
+      <div><div class="stat-num" data-t="73" data-s="/100">0</div><div class="stat-label">EF SET Score</div></div>
+    </div>
+  </div>
+
+  <div class="hvisual">
+    <div class="orb-ring orb1"><div class="orb-dot od1"></div><div class="orb-dot od2"></div></div>
+    <div class="orb-ring orb2"><div class="orb-dot od3"></div></div>
+    <div class="orb-ring orb3"></div>
+
+    <div class="pcard" id="pcard">
+      <div class="pcard-shine"></div>
+      <div class="pcard-border-glow"></div>
+      <div class="pavatar">AK</div>
+      <div class="pname">Allan Kungu Odongo</div>
+      <div class="prole">// IT Support Professional</div>
+      <div class="pdiv"></div>
+      <div class="pbars">
+        <div class="prow"><div class="plabel"><span>Helpdesk Support</span><b>Expert</b></div><div class="pbar"><div class="pfill gold" data-w="92"></div></div></div>
+        <div class="prow"><div class="plabel"><span>CRM / Ticketing</span><b>Advanced</b></div><div class="pbar"><div class="pfill cyan" data-w="86"></div></div></div>
+        <div class="prow"><div class="plabel"><span>Remote Support</span><b>Expert</b></div><div class="pbar"><div class="pfill gold" data-w="90"></div></div></div>
+        <div class="prow"><div class="plabel"><span>Computer Repair</span><b>Advanced</b></div><div class="pbar"><div class="pfill green" data-w="85"></div></div></div>
+        <div class="prow"><div class="plabel"><span>Networking</span><b>Proficient</b></div><div class="pbar"><div class="pfill cyan" data-w="76"></div></div></div>
+      </div>
+      <div class="pbadges">
+        <span class="badge">HubSpot</span><span class="badge">Zendesk</span><span class="badge">ServiceNow</span><span class="badge">C2 English</span><span class="badge">ICT L6</span><span class="badge">AnyDesk</span>
+      </div>
+    </div>
+
+    <div class="fcard fc1"><span class="fi">🏆</span><div><div class="fval">100% Score</div><div class="fsub">Industrial Attachment</div></div></div>
+    <div class="fcard fc2"><span class="fi">🌐</span><div><div class="fval">C2 Proficient</div><div class="fsub">EF SET · 73/100</div></div></div>
+    <div class="fcard fc3"><span class="fi">✅</span><div><div class="fval">95% FCR</div><div class="fsub">First-contact rate</div></div></div>
+  </div>
+
+</div>
+</div>
+<div class="scroll-hint"><div class="sh-line"></div>scroll</div>
+</section>
+
+<!-- ████ ABOUT ████ -->
+<section id="about-detail">
+<div class="wrap sec">
+  <div class="sec-label">// about_me</div>
+  <h2 class="sec-title reveal">IT Pro. Problem Solver.</h2>
+  <div class="term-wrap reveal">
+    <div class="term-bar"><div class="tdot r"></div><div class="tdot y"></div><div class="tdot g"></div><span class="term-title-bar">allan@portfolio ~ $</span></div>
+    <div class="term-body">
+      <div><span class="t-cmd">$ </span><span class="t-key">whoami</span></div>
+      <div><span class="t-val">Allan Kungu Odongo</span> <span class="t-comment">// IT Support Professional · Nairobi, Kenya</span></div>
+      <div style="margin-top:.4rem"><span class="t-cmd">$ </span><span class="t-key">cat</span> profile.json</div>
+      <div><span class="t-val">{ "experience": "4+ years", "FCR": "95%+", "staff_supported": "50+", "systems_secured": 30, "english": "C2 Proficient (73/100)" }</span></div>
+      <div style="margin-top:.4rem"><span class="t-cmd">$ </span><span class="t-key">status</span> --hire</div>
+      <div class="t-ok">✓ OPEN TO WORK — Helpdesk · IT Support · Remote Support · CRM Roles</div>
+      <div><span class="t-cmd">$ </span><span class="t-cursor"></span></div>
+    </div>
+  </div>
+  <div class="about-grid" style="margin-top:2.5rem">
+    <div>
+      <div class="about-body reveal">
+        <p>I'm <strong>Allan Kungu Odongo</strong>, an IT Support Professional from <strong>Nairobi, Kenya</strong>. I hold a <strong>Diploma in ICT — Technician Level 6</strong> from Kabete National Polytechnic and bring over 4 years of hands-on support experience.</p>
+        <p>My work spans helpdesk support, remote troubleshooting, computer repair &amp; maintenance, CRM &amp; ticketing systems, basic network troubleshooting, and system maintenance. I've supported staff at the <strong>Ministry of Lands &amp; Physical Planning</strong>, worked in cyber environments, and run my own freelance IT practice since 2022.</p>
+        <p>I raise and escalate tickets through structured incident management workflows, ensuring SLA compliance and fast resolution. Certified <strong>C2 Proficient in English</strong> (EF SET, 73/100 — May 2026) — I communicate technical solutions clearly to all users.</p>
+      </div>
+      <div class="cpills reveal" style="transition-delay:.12s">
+        <div class="cpill"><span class="ci">📞</span><div><div class="cpill-label">Phone</div><div class="cpill-val">+254 769 680124</div></div></div>
+        <div class="cpill"><span class="ci">✉️</span><div><div class="cpill-label">Email</div><div class="cpill-val">kunguallan75@gmail.com</div></div></div>
+        <div class="cpill"><span class="ci">📍</span><div><div class="cpill-label">Location</div><div class="cpill-val">Nairobi, Kenya</div></div></div>
+        <div class="cpill"><span class="ci">🌐</span><div><div class="cpill-label">Languages</div><div class="cpill-val">English (C2) · Swahili (Native)</div></div></div>
+        <a class="cpill" href="https://www.linkedin.com/in/allan-kungu-it-support" target="_blank"><span class="ci">🔗</span><div><div class="cpill-label">LinkedIn</div><div class="cpill-val">linkedin.com/in/allan-kungu-it-support</div></div></a>
+      </div>
+    </div>
+    <div class="iboxes reveal" style="transition-delay:.18s">
+      <div class="ibox"><div class="ibox-head"><span class="ibox-icon">🎓</span><div class="ibox-title">ICT Technician Level 6</div></div><div class="ibox-body">Kabete National Polytechnic · 2023–2025 · Computing &amp; Informatics. 100% Industrial Attachment Score.</div></div>
+      <div class="ibox"><div class="ibox-head"><span class="ibox-icon">🏛️</span><div class="ibox-title">Government Attachment</div></div><div class="ibox-body">Ministry of Lands &amp; Physical Planning · Jan–Apr 2025. Supported 50+ staff, deployed antivirus across 30+ systems.</div></div>
+      <div class="ibox"><div class="ibox-head"><span class="ibox-icon">💼</span><div class="ibox-title">Freelance IT Support</div></div><div class="ibox-body">Remote Computer Support Technician · Jan 2022–Feb 2026 (Part-Time). 95%+ first-contact resolution rate.</div></div>
+      <div class="ibox"><div class="ibox-head"><span class="ibox-icon">🌐</span><div class="ibox-title">C2 English — EF SET</div></div><div class="ibox-body">Scored 73/100 · Reading C2 · Writing C2 · Speaking C2. Awarded May 2026.</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ████ EXPERIENCE ████ -->
+<section id="experience">
+<div class="wrap sec">
+  <div class="sec-label">// work_history</div>
+  <h2 class="sec-title reveal">Experience</h2>
+  <p class="sec-sub reveal">4+ years of hands-on IT support, computer repair, and system maintenance across government departments, cyber environments and freelance work.</p>
+  <div class="exp-list">
+
+    <div class="exp-item reveal">
+      <div class="exp-left"><div class="exp-dot"></div><div class="exp-dates">Jan 2022 – Feb 2026</div><div class="exp-org">Freelance IT Support<br>(Part-Time) — Nairobi</div></div>
+      <div class="exp-right">
+        <div class="exp-role">Remote Computer Support Technician</div>
+        <div class="exp-co">Freelance IT Support · Nairobi</div>
+        <div class="exp-desc">Provided on-demand remote IT support and virtual computer repair to individual and small business clients via AnyDesk, TeamViewer, and Windows Remote Desktop. Resolved software faults, OS errors, virus infections, password recovery, and network connectivity issues including Wi-Fi configuration and device communication, achieving a 95%+ first-contact resolution rate. Performed remote system maintenance and logged all tickets via CRM tools, reducing repeat requests by ~30%.</div>
+        <div class="exp-tags"><span class="etag">Remote Support</span><span class="etag">Computer Repair</span><span class="etag">CRM Tools</span><span class="etag">Ticket Escalation</span><span class="etag">Windows OS</span><span class="etag">Network Troubleshooting</span><span class="etag">95% FCR</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal" style="transition-delay:.08s">
+      <div class="exp-left"><div class="exp-dot"></div><div class="exp-dates">Jan – Apr 2025</div><div class="exp-org">Ministry of Lands &amp;<br>Physical Planning<br>— Nairobi</div></div>
+      <div class="exp-right">
+        <div class="exp-role">IT Support Attaché</div>
+        <div class="exp-co">Ministry of Lands and Physical Planning · Nairobi</div>
+        <div class="exp-desc">Provided first-line IT support to 50+ departmental staff through on-site and remote assistance, resolving login failures, workstation errors, and application issues. Carried out hands-on computer repairs, system maintenance, and basic network troubleshooting including LAN connectivity. Supported antivirus deployment across 30+ systems and consistently resolved issues within the same working day to meet SLA expectations.</div>
+        <div class="exp-tags"><span class="etag">First-Line Support</span><span class="etag">CRM / Ticketing</span><span class="etag">SLA Compliance</span><span class="etag">Computer Repair</span><span class="etag">LAN Troubleshooting</span><span class="etag">50+ Staff</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal" style="transition-delay:.14s">
+      <div class="exp-left"><div class="exp-dot"></div><div class="exp-dates">2022 – 2023</div><div class="exp-org">Community Digital<br>Services — Nairobi</div></div>
+      <div class="exp-right">
+        <div class="exp-role">IT Support Assistant</div>
+        <div class="exp-co">Community Digital Services · Nairobi</div>
+        <div class="exp-desc">Assisted 15+ daily walk-in clients with digital services including online applications, document preparation, and system troubleshooting. Performed physical and remote computer repairs and system maintenance, diagnosing hardware, software, and basic network faults to reduce client wait times. Maintained workstations in a secure, updated state.</div>
+        <div class="exp-tags"><span class="etag">User Support</span><span class="etag">Computer Repair</span><span class="etag">System Maintenance</span><span class="etag">Network Faults</span><span class="etag">15+ Daily Clients</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal" style="transition-delay:.2s">
+      <div class="exp-left"><div class="exp-dot"></div><div class="exp-dates">Apr – Oct 2021</div><div class="exp-org">Interweb Cyber<br>Services — Nairobi</div></div>
+      <div class="exp-right">
+        <div class="exp-role">IT Support Technician</div>
+        <div class="exp-co">Interweb Cyber Services · Nairobi</div>
+        <div class="exp-desc">Managed technical support and computer repairs for a high-traffic cyber café with 10+ networked workstations, keeping system and network availability above 90% during peak hours. Resolved OS errors, printer malfunctions, inter-device connectivity faults, and hardware/software issues for 30+ customers daily. Reduced recurring faults by 40%+ through scheduled maintenance.</div>
+        <div class="exp-tags"><span class="etag">10+ Workstations</span><span class="etag">90% Uptime</span><span class="etag">Hardware Repair</span><span class="etag">Network Connectivity</span><span class="etag">30+ Customers/Day</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal" style="transition-delay:.26s">
+      <div class="exp-left"><div class="exp-dot"></div><div class="exp-dates">2020 – 2021</div><div class="exp-org">Local ICT Services<br>(Part-time) — Nairobi</div></div>
+      <div class="exp-right">
+        <div class="exp-role">Junior Computer Support Assistant</div>
+        <div class="exp-co">Local ICT Services · Nairobi</div>
+        <div class="exp-desc">Provided basic IT support including computer repairs, OS installation, virus removal, and troubleshooting hardware, software, and network issues. Assisted users with internet access, device connectivity, printer setup, and software configuration. Guided new users on computer operation and digital safety practices.</div>
+        <div class="exp-tags"><span class="etag">OS Installation</span><span class="etag">Hardware Support</span><span class="etag">Device Connectivity</span><span class="etag">User Training</span><span class="etag">Digital Safety</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- ████ EDUCATION ████ -->
+<section id="education">
+<div class="wrap sec">
+  <div class="sec-label">// academic_background</div>
+  <h2 class="sec-title reveal">Education</h2>
+  <div class="edu-grid reveal">
+    <div class="edu-card"><div class="edu-year">2023 – 2025</div><div class="edu-deg">Diploma in ICT — Technician Level 6</div><div class="edu-school">Kabete National Polytechnic · Computing &amp; Informatics</div></div>
+    <div class="edu-card"><div class="edu-year">2017 – 2021</div><div class="edu-deg">Kenya Certificate of Secondary Education (KCSE)</div><div class="edu-school">Koderobara Secondary School</div></div>
+  </div>
+  <div class="sec-label reveal" style="margin-top:1rem">// provisional_transcript</div>
+  <h3 class="reveal" style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:.5rem">Academic Performance</h3>
+  <div class="trans-header reveal">
+    <div class="admit-tag">ICT Level 6 · Kabete National Polytechnic · Admission: ICT/600/M23/077</div>
+    <div style="display:flex;gap:1rem;font-family:var(--mono);font-size:.7rem">
+      <span class="ts-mastery">● MASTERY</span><span class="ts-proficient">● PROFICIENT</span><span class="ts-competent">● COMPETENT</span>
+    </div>
+  </div>
+  <div class="reveal" style="overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,.07)">
+    <table class="trans"><thead><tr><th>Unit</th><th>Score</th><th>Status</th></tr></thead><tbody id="trans-body"></tbody></table>
+  </div>
+</div>
+</section>
+
+<!-- ████ SKILLS ████ -->
+<section id="skills">
+<div class="wrap sec">
+  <div class="sec-label">// capabilities</div>
+  <h2 class="sec-title reveal">Tools &amp; Skills</h2>
+  <div class="skills-grid reveal">
+    <div><div class="sg-title">IT Support &amp; Helpdesk</div><div class="chips">
+      <span class="chip hot">Helpdesk &amp; User Support</span><span class="chip hot">First-Line Support</span><span class="chip hot">Remote Troubleshooting</span><span class="chip hot">Incident Management</span><span class="chip hot">SLA Compliance</span><span class="chip hot">Ticket Escalation</span><span class="chip hot">Customer Support</span><span class="chip">Password Resets</span><span class="chip">User Training</span><span class="chip">System Diagnostics</span><span class="chip">Workstation Maintenance</span>
+    </div></div>
+    <div><div class="sg-title">CRM &amp; Remote Tools</div><div class="chips">
+      <span class="chip hot">HubSpot</span><span class="chip hot">Zendesk</span><span class="chip hot">ServiceNow</span><span class="chip hot">AnyDesk</span><span class="chip hot">TeamViewer</span><span class="chip">Remote Desktop</span><span class="chip">Microsoft Office Suite</span><span class="chip">Visual Studio Code</span>
+    </div></div>
+    <div><div class="sg-title">Systems, Repair &amp; Networking</div><div class="chips">
+      <span class="chip hot">Windows OS (XP–11)</span><span class="chip hot">Computer Repair &amp; Maintenance</span><span class="chip hot">Hardware &amp; Software Diagnosis</span><span class="chip hot">Basic Network Troubleshooting</span><span class="chip hot">Antivirus &amp; Security</span><span class="chip hot">Malware Detection</span><span class="chip">OS Installation</span><span class="chip">LAN / Wi-Fi Configuration</span><span class="chip">Printer &amp; Peripheral Support</span><span class="chip">Cyber Security Fundamentals</span>
+    </div></div>
+    <div><div class="sg-title">Development (Academic Exposure)</div><div class="chips">
+      <span class="chip">HTML &amp; CSS</span><span class="chip">JavaScript</span><span class="chip">Responsive Web Dev</span><span class="chip">Python</span><span class="chip">Java</span><span class="chip">C</span><span class="chip">MySQL</span><span class="chip">Visual Basic</span><span class="chip">Computerized Graphics</span>
+    </div></div>
+  </div>
+</div>
+</section>
+
+<!-- ████ CERTS ████ -->
+<section id="certs">
+<div class="wrap sec">
+  <div class="sec-label">// credentials</div>
+  <h2 class="sec-title reveal">Certifications</h2>
+  <div class="certs-grid reveal">
+    <div class="cert-card"><div class="cert-icon">🎓</div><div class="cert-name">ICT Technician Level 6</div><div class="cert-issuer">Kabete National Polytechnic</div><div class="cert-year">2025</div></div>
+    <div class="cert-card"><div class="cert-icon">🌐</div><div class="cert-name">C2 Proficient — EF SET English</div><div class="cert-issuer">EF Education First · 73/100</div><div class="cert-year">May 2026 · cert.efset.org/j1LKGo</div></div>
+    <div class="cert-card"><div class="cert-icon">💻</div><div class="cert-name">Responsive Web Development</div><div class="cert-issuer">Shield (CTO: Eric Muriithi)</div><div class="cert-year">Oct – Nov 2024</div></div>
+    <div class="cert-card"><div class="cert-icon">🏅</div><div class="cert-name">Certificate of Merit — Computer Studies</div><div class="cert-issuer">Intro Technology Computer System</div><div class="cert-year">Jan 2022</div></div>
+    <div class="cert-card"><div class="cert-icon">🏛️</div><div class="cert-name">Recommendation Letter</div><div class="cert-issuer">Ministry of Lands &amp; Physical Planning</div><div class="cert-year">Apr 2025</div></div>
+    <div class="cert-card"><div class="cert-icon">🎖️</div><div class="cert-name">Academic Support Programme</div><div class="cert-issuer">Moi Air Base</div><div class="cert-year">Sept – Oct 2020</div></div>
+  </div>
+</div>
+</section>
+
+<!-- ████ DOCS ████ -->
+<section id="documents">
+<div class="wrap sec">
+  <div class="sec-label">// official_documents</div>
+  <h2 class="sec-title reveal">Downloads</h2>
+  <p class="sec-sub reveal">Click any card to download the official document.</p>
+  <div class="docs-grid reveal">
+    <div class="doc-card"><div class="doc-top"><div class="doc-ico">📄</div><div><div class="doc-name">Curriculum Vitae 2026</div><div class="doc-meta">Allan Kungu Odongo · 2026</div></div></div><div class="doc-desc">Updated CV with full work history, skills, certifications, and contact details.</div><a href="https://allankungu.github.io/portfolio/Allan Kungu CV 2026.pdf" class="doc-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 2h14v2H5v-2z"/></svg> Download CV</a></div>
+    <div class="doc-card"><div class="doc-top"><div class="doc-ico">🎓</div><div><div class="doc-name">Completion Letter</div><div class="doc-meta">Kabete National Polytechnic · Aug 2025</div></div></div><div class="doc-desc">Official letter confirming completion of ICT Technician Level 6 diploma.</div><a href="https://allankungu.github.io/portfolio/letter_of_completion.pdf" class="doc-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 2h14v2H5v-2z"/></svg> Download</a></div>
+    <div class="doc-card"><div class="doc-top"><div class="doc-ico">📊</div><div><div class="doc-name">Provisional Transcript</div><div class="doc-meta">ICT Level 6 · Kabete National Polytechnic</div></div></div><div class="doc-desc">Full academic transcript — 16 units including 100% in Industrial Attachment.</div><a href="https://allankungu.github.io/portfolio/Provisional_Transcript_.pdf" class="doc-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 2h14v2H5v-2z"/></svg> Download</a></div>
+    <div class="doc-card"><div class="doc-top"><div class="doc-ico">🌐</div><div><div class="doc-name">EF SET English Certificate</div><div class="doc-meta">C2 Proficient · 73/100 · May 2026</div></div></div><div class="doc-desc">International English proficiency — C2 Proficient. Reading C2, Writing C2, Speaking C2.</div><a href="https://allankungu.github.io/portfolio/EF SET Certificate.pdf" class="doc-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 2h14v2H5v-2z"/></svg> Download</a></div>
+    <div class="doc-card"><div class="doc-top"><div class="doc-ico">💻</div><div><div class="doc-name">Web Development Certificate</div><div class="doc-meta">Responsive Web Dev · Oct–Nov 2024</div></div></div><div class="doc-desc">Certificate of Participation — Responsive Web Development by Shield.</div><a href="https://allankungu.github.io/portfolio/Web_dev_cert.pdf" class="doc-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 2h14v2H5v-2z"/></svg> Download</a></div>
+    <div class="doc-card"><div class="doc-top"><div class="doc-ico">🏅</div><div><div class="doc-name">Computer Studies Certificate</div><div class="doc-meta">Certificate of Merit · Jan 2022</div></div></div><div class="doc-desc">Certificate of Merit from Intro Technology Computer System.</div><a href="https://allankungu.github.io/portfolio/Computer_studies.pdf" class="doc-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 2h14v2H5v-2z"/></svg> Download</a></div>
+    <div class="doc-card"><div class="doc-top"><div class="doc-ico">🏛️</div><div><div class="doc-name">Recommendation Letter</div><div class="doc-meta">Ministry of Lands · Apr 2025</div></div></div><div class="doc-desc">Official recommendation from Ministry of Lands &amp; Physical Planning.</div><a href="https://allankungu.github.io/portfolio/Recommendation_letter_Ardhi_house.pdf" class="doc-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 2h14v2H5v-2z"/></svg> Download</a></div>
+    <div class="doc-card"><div class="doc-top"><div class="doc-ico">🎖️</div><div><div class="doc-name">Academic Support Certificate</div><div class="doc-meta">Moi Air Base · Sept–Oct 2020</div></div></div><div class="doc-desc">Certificate of Participation — Moi Air Base Academic Support Programme.</div><a href="https://allankungu.github.io/portfolio/Academic_support_cert__1_.pdf" class="doc-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 2h14v2H5v-2z"/></svg> Download</a></div>
+  </div>
+</div>
+</section>
+
+<!-- ████ CONTACT ████ -->
+<section id="contact">
+<div class="wrap sec">
+  <div class="sec-label">// get_in_touch</div>
+  <h2 class="sec-title reveal">Let's Work Together</h2>
+  <div class="contact-grid reveal">
+    <div>
+      <div class="cinfo-row"><div class="cinfo-ico-wrap">📞</div><div><div class="cinfo-label">Phone</div><div class="cinfo-val">+254 769 680124</div></div></div>
+      <div class="cinfo-row"><div class="cinfo-ico-wrap">✉️</div><div><div class="cinfo-label">Email</div><div class="cinfo-val">kunguallan75@gmail.com</div></div></div>
+      <div class="cinfo-row"><div class="cinfo-ico-wrap">📍</div><div><div class="cinfo-label">Location</div><div class="cinfo-val">Nairobi, Kenya</div></div></div>
+      <div class="cinfo-row"><div class="cinfo-ico-wrap">🟢</div><div><div class="cinfo-label">Status</div><div class="cinfo-val">Available for hire</div></div></div>
+      <div class="cinfo-row"><div class="cinfo-ico-wrap">🔗</div><div><div class="cinfo-label">LinkedIn</div><div class="cinfo-val">linkedin.com/in/allan-kungu-it-support</div></div></div>
+      <div class="cinfo-row"><div class="cinfo-ico-wrap">🌍</div><div><div class="cinfo-label">Portfolio</div><div class="cinfo-val">allankungu.github.io/portfolio</div></div></div>
+    </div>
+    <div class="contact-cta">
+      <h3>Open to IT Support Roles</h3>
+      <p>I'm actively looking for helpdesk, IT support, computer repair, and CRM-related positions. Fast response guaranteed — feel free to reach out via email or LinkedIn.</p>
+      <div class="cta-stack">
+        <a href="mailto:kunguallan75@gmail.com" class="btn-primary">✉ Send Me an Email</a>
+        <a href="https://www.linkedin.com/in/allan-kungu-it-support" class="btn-ghost" target="_blank">🔗 View LinkedIn Profile</a>
+        <a href="https://allankungu.github.io/portfolio/Updated CV for Allan kungu 2026.pdf" class="btn-ghost" target="_blank">↓ Download CV 2026</a>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="foot-l">Allan Kungu Odongo<span> · </span>Nairobi, Kenya</div>
+  <div class="foot-r">IT Support Professional · 2026 · Built with ❤️</div>
+</footer>
+
+<script>
+/* ══ CURSOR ══ */
+const C1=document.getElementById('cur'),C2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function loop(){C1.style.cssText+=`;left:${mx}px;top:${my}px`;rx+=(mx-rx)*.1;ry+=(my-ry)*.1;C2.style.cssText+=`;left:${rx}px;top:${ry}px`;requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.chip,.cert-card,.doc-card,.exp-item,.ibox,.fcard').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+
+/* ══ SCROLL PROGRESS ══ */
+const sp=document.getElementById('sprogress');
+const onScroll=()=>{const p=document.documentElement;sp.style.width=(p.scrollTop/(p.scrollHeight-p.clientHeight)*100)+'%'};
+window.addEventListener('scroll',onScroll,{passive:true});
+
+/* ══ PARTICLE + CONNECTION FIELD ══ */
+const bgC=document.getElementById('bg-canvas'),bgX=bgC.getContext('2d');
+let W,H,pts=[];
+const resize=()=>{W=bgC.width=window.innerWidth;H=bgC.height=window.innerHeight};
+resize();window.addEventListener('resize',resize);
+const mkPt=()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*1.3+.3,o:Math.random()*.22+.04,hue:Math.random()<.15?'0,212,255':'245,200,66'});
+for(let i=0;i<120;i++)pts.push(mkPt());
+let pmx=W/2,pmy=H/2;
+document.addEventListener('mousemove',e=>{pmx=e.clientX;pmy=e.clientY});
+(function animate(){
+  bgX.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    const dx=p.x-pmx,dy=p.y-pmy,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<130){p.vx+=dx/d*.06;p.vy+=dy/d*.06}
+    p.vx*=.992;p.vy*=.992;
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    bgX.beginPath();bgX.arc(p.x,p.y,p.r,0,Math.PI*2);
+    bgX.fillStyle=`rgba(${p.hue},${p.o})`;bgX.fill();
+  });
+  for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){
+    const d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y);
+    if(d<115){bgX.beginPath();bgX.moveTo(pts[i].x,pts[i].y);bgX.lineTo(pts[j].x,pts[j].y);bgX.strokeStyle=`rgba(245,200,66,${.055*(1-d/115)})`;bgX.lineWidth=.5;bgX.stroke()}
+  }}
+  requestAnimationFrame(animate);
+})();
+
+/* ══ MATRIX RAIN ══ */
+const mC=document.getElementById('matrix-canvas'),mX=mC.getContext('2d');
+let mW,mH,drops;
+const mResize=()=>{mW=mC.width=window.innerWidth;mH=mC.height=window.innerHeight;drops=new Array(Math.floor(mW/16)).fill(0)};
+mResize();window.addEventListener('resize',mResize);
+const mChars='01アイウエカキクITSupportHelpdesk95%FCR';
+setInterval(()=>{
+  mX.fillStyle='rgba(6,11,24,.055)';mX.fillRect(0,0,mW,mH);
+  mX.font='12px JetBrains Mono';
+  drops.forEach((y,i)=>{
+    const col=Math.random()<.12?'rgba(0,212,255,.7)':'rgba(245,200,66,.55)';
+    mX.fillStyle=col;
+    mX.fillText(mChars[Math.floor(Math.random()*mChars.length)],i*16,y*16);
+    if(y*16>mH&&Math.random()>.96)drops[i]=0; else drops[i]++;
+  });
+},55);
+
+/* ══ FLOATING TECH ICONS ══ */
+const icons=['⚙️','💻','🔧','🌐','📡','🛡️','⚡','🖥️','🔌','📶','🖱️','⌨️'];
+icons.forEach((ic,i)=>{
+  const el=document.createElement('div');
+  el.className='tech-icon';el.textContent=ic;
+  el.style.cssText=`left:${Math.random()*95}%;animation:tech-float ${18+Math.random()*14}s ${-Math.random()*20}s linear infinite;font-size:${1.1+Math.random()*.8}rem`;
+  document.body.appendChild(el);
+});
+const style=document.createElement('style');
+style.textContent=`@keyframes tech-float{0%{transform:translateY(105vh) rotate(0deg);opacity:0}5%{opacity:.07}95%{opacity:.07}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}`;
+document.head.appendChild(style);
+
+/* ══ TYPING ══ */
+const phrases=['IT Support Professional','Remote Support Technician','CRM & Helpdesk Expert','Computer Repair Specialist','First-Line Support · SLA Pro','C2 English · ICT Level 6'];
+let pi=0,ci=0,del=false,pause=0;
+const tel=document.getElementById('typed');
+function type(){const ph=phrases[pi];if(!del){tel.textContent=ph.slice(0,++ci);if(ci===ph.length){del=true;pause=72}}else{if(pause-->0){setTimeout(type,28);return}tel.textContent=ph.slice(0,--ci);if(ci===0){del=false;pi=(pi+1)%phrases.length}}setTimeout(type,del?28:70)}
+setTimeout(type,1300);
+
+/* ══ COUNTERS ══ */
+setTimeout(()=>{document.querySelectorAll('.stat-num').forEach(el=>{const t=+el.dataset.t,s=el.dataset.s||'+';let c=0;const step=t/55;const tm=setInterval(()=>{c=Math.min(c+step,t);el.textContent=Math.floor(c)+s;if(c>=t)clearInterval(tm)},16)})},900);
+
+/* ══ SKILL BARS ══ */
+setTimeout(()=>{document.querySelectorAll('.pfill').forEach(el=>{el.style.width=el.dataset.w+'%'})},1500);
+
+/* ══ 3D CARD TILT ══ */
+document.addEventListener('mousemove',e=>{
+  const card=document.getElementById('pcard');if(!card)return;
+  const r=card.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  card.style.transform=`rotateY(${(e.clientX-cx)/r.width*18}deg) rotateX(${-(e.clientY-cy)/r.height*18}deg)`;
+});
+
+/* ══ TRANSCRIPT ══ */
+const units=[
+  ['Industrial Attachment',100,'MASTERY'],['Cyber Security',91,'MASTERY'],
+  ['Environmental Literacy',89,'MASTERY'],['Computer Repair and Maintenance',86,'MASTERY'],
+  ['Computer Application Development',85,'MASTERY'],['Computer Networking',83,'MASTERY'],
+  ['Basic Electronics',80,'MASTERY'],['Digital Literacy',78,'PROFICIENT'],
+  ['Website Development',75,'PROFICIENT'],['Communication Skills',74,'PROFICIENT'],
+  ['Employability Skills',67,'PROFICIENT'],['Computer Programming Python',66,'PROFICIENT'],
+  ['Occupational Safety & Health',69,'PROFICIENT'],['Computerized Database',60,'COMPETENT'],
+  ['Computer Programming C',59,'COMPETENT'],['Computerized Graphics Design',58,'COMPETENT'],
+];
+const tb=document.getElementById('trans-body');
+units.forEach(([name,score,status],idx)=>{
+  const cls=status==='MASTERY'?'mastery':status==='PROFICIENT'?'proficient':'competent';
+  const row=document.createElement('tr');
+  row.style.cssText=`opacity:0;transform:translateX(-12px);transition:opacity .4s ${idx*.04}s,transform .4s ${idx*.04}s`;
+  row.innerHTML=`<td>${name}</td><td><div class="score-wrap"><span class="score-num">${score}</span><div class="score-bar"><div class="score-fill fill-${cls}" data-w="${score}"></div></div></div></td><td class="ts-${cls}" style="font-family:var(--mono);font-size:.7rem;font-weight:600">${status}</td>`;
+  tb.appendChild(row);
+});
+
+/* ══ REVEAL ON SCROLL ══ */
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{
+  if(e.isIntersecting){
+    e.target.classList.add('in');
+    e.target.querySelectorAll('.score-fill').forEach(b=>{b.style.width=b.dataset.w+'%'});
+    if(e.target.tagName==='DIV'&&e.target.style.overflowX==='auto'){
+      tb.querySelectorAll('tr').forEach(r=>{r.style.opacity='1';r.style.transform='none'});
+    }
+  }
+})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+const obs2=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){
+  e.target.querySelectorAll('.score-fill').forEach(b=>{b.style.width=b.dataset.w+'%'});
+  tb.querySelectorAll('tr').forEach(r=>{r.style.opacity='1';r.style.transform='none'});
+}})},{threshold:.05});
+document.querySelectorAll('table.trans').forEach(t=>obs2.observe(t));
+
+/* ══ BADGE STAGGER ══ */
+document.querySelectorAll('.badge').forEach((b,i)=>{b.style.animationDelay=(1.5+i*.07)+'s'});
+
+/* ══ NAV ACTIVE ══ */
+const navAs=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let id='hero';
+  document.querySelectorAll('section[id]').forEach(s=>{if(window.scrollY>=s.offsetTop-130)id=s.id});
+  navAs.forEach(a=>{a.classList.toggle('nav-active',a.getAttribute('href')==='#'+id)});
+},{passive:true});
+</script>
+</body>
+</html>
